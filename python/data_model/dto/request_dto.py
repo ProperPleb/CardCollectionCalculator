@@ -14,15 +14,19 @@ class Range:
 @dataclass(init=False)
 class Term:
     channelId: int
-    sellerStatus: str
+    condition: list
     productLineName: list
     setName: list
     language: list
+    listingType: str
+    printing: list
+    sellerStatus: str
 
 
 @dataclass(init=False)
 class Exclude:
     channelExclusions: int
+    listingType: str
 
 
 @dataclass(init=False)
@@ -75,3 +79,10 @@ class GridDTO:
     sort: Sort
 
 
+@dataclass(init=False)
+class DetailViewDTO:
+    from_: int
+    size: int
+    context: Context
+    filters: Filters
+    sort: Sort
