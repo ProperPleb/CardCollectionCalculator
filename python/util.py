@@ -11,9 +11,9 @@ class GridUtil:
         grid.algorithm = C.DEFAULT_ALGO
         grid.from_ = C.DEFAULT_FROM
         grid.size = C.DEFAULT_GRID_SIZE
-        grid.context = GridUtil.instantiateContext()
         grid.filters = GridUtil.instantiateFilter("GRID")
         grid.listingSearch = GridUtil.instantiateListingSearch()
+        grid.context = GridUtil.instantiateContext()
         grid.settings = GridUtil.instantiateSettings()
         grid.sort = GridUtil.instantiateSort()
         return grid
@@ -39,10 +39,10 @@ class GridUtil:
     @staticmethod
     def instantiateGridFilter(level: str) -> Filters:
         filters = Filters()
-        filters.match_ = {}
-        filters.range = Range()
         term = GridUtil.instantiateTerm(level)
         filters.term = term
+        filters.range = Range()
+        filters.match_ = {}
         return filters
 
     @staticmethod
@@ -57,7 +57,6 @@ class GridUtil:
     def instantiateGridTerm() -> Term:
         term = Term()
         term.productLineName = [C.YUGIOH_LOWER]
-        term.setName = []
         return term
 
     @staticmethod
@@ -72,32 +71,32 @@ class GridUtil:
     @staticmethod
     def instantiateLSFilter(level: str) -> Filters:
         filters = Filters()
-        exclude = Exclude()
-        exclude.channelExclusions = C.DEFAULT_CHANNEL_EXCLUSION
-        filters.exclude = exclude
+        filters.term = GridUtil.instantiateTerm(level)
         range_ = Range()
         quantity = Quantity()
         quantity.gte = C.DEFAULT_GTE
         range_.quantity = quantity
         filters.range_ = range_
-        filters.term = GridUtil.instantiateTerm(level)
+        exclude = Exclude()
+        exclude.channelExclusion = C.DEFAULT_CHANNEL_EXCLUSION
+        filters.exclude = exclude
         return filters
 
     @staticmethod
     def instantiateLSTerm() -> Term:
         term = Term()
-        term.channelId = C.DEFAULT_CHANNEL_ID
-        term.language = [C.LANGUAGE_ENGLISH]
         term.sellerStatus = C.SELLER_STATUS_LIVE
-        term.condition = [C.CONDITION_NM]
-        term.listingType = [C.DEFAULT_LISTING_TYPE]
+        term.channelId = C.DEFAULT_CHANNEL_ID
+        # term.language = [C.LANGUAGE_ENGLISH]
+        # term.condition = [C.CONDITION_NM]
+        # term.listingType = [C.DEFAULT_LISTING_TYPE]
         return term
 
     @staticmethod
     def instantiateSettings() -> Settings:
         settings = Settings()
-        settings.didYouMean = {}
         settings.useFuzzySearch = C.DEFAULT_FUZZY_SEARCH
+        settings.didYouMean = {}
         return settings
 
     @staticmethod
@@ -131,7 +130,7 @@ class DetailViewUtil:
     def instantiateFilters() -> Filters:
         filters = Filters()
         exclude = Exclude()
-        exclude.channelExclusions = C.DEFAULT_CHANNEL_EXCLUSION
+        exclude.channelExclusion = C.DEFAULT_CHANNEL_EXCLUSION
         filters.exclude = exclude
         range_ = Range()
         quantity = Quantity()

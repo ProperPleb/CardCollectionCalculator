@@ -25,7 +25,7 @@ class Term:
 
 @dataclass(init=False)
 class Exclude:
-    channelExclusions: int
+    channelExclusion: int
     listingType: str
 
 

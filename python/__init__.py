@@ -29,7 +29,17 @@ def main() -> int:
         json_str = jsonpickle.encode(detail_view, unpicklable=False)
         logger.info(util.JSONUtil.overrideVariableNames(json_str))
         logger.info(json_str)
-        # logger.info(r.ping("https://google.com"))
+
+        logger.info(r.urlSetup("host.action.query.prefix", "host.action.query.suffix"))
+        logger.info(r.urlSetup("host.action.query.prefix", "host.action.query.suffix", "diabellstar the black witch".replace(" ", "+")))
+        logger.info(r.urlSetup("host.action.list.prefix", "host.action.list.suffix", str(558188)))
+
+        json_str: str = util.JSONUtil.overrideVariableNames(jsonpickle.encode(grid, unpicklable=False))
+        query = "diabellstar the black witch"
+        logger.info(json_str)
+        logger.info(query.replace(" ", "+"))
+        logger.info(json.loads(json_str))
+        logger.info(r.getGrid(json_str, query).content)
     except Exception as e:
         logger.exception(e)
         return 1

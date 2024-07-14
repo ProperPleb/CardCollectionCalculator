@@ -1,2 +1,9 @@
 host:
-  url: "https://sample.com"
+  url: "https://sample.com/"
+  action:
+    query:
+      prefix: "stuff/before?q="
+      suffix: "&stuffAfter&fev"
+    list:
+      prefix: "stuffBeforeItemId/"
+      suffix: "/stuffAfter?fev"
