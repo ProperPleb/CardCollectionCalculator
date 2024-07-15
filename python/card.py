@@ -9,5 +9,6 @@ class Card:
     card_name: str
     unit_price: float
     total_price: float
-    set_prefix: str
+    set_number: str
     edition: str
+    condition: str
