@@ -1,7 +1,7 @@
 import constants as C
 import logging
 import re
-import jsonpickle
+import os.path
 
 from python.request_dto import *
 from openpyxl import *
@@ -192,7 +192,7 @@ class ExcelUtil:
 
         while current_cell.value is not None:
             ExcelUtil.ORIGINAL_HEADER_NAMES.append(str(current_cell.value))
-            headers.append(str(current_cell.value).lower().replace(" ", "_", -1))
+            headers.append(str(current_cell.value).lower().strip().replace(" ", "_", -1))
             current_cell = current_cell.offset(0, 1)
 
         first_cell = sheet['A2']
@@ -211,7 +211,48 @@ class ExcelUtil:
                 card_list.append(Card(**card_dict))
             current_cell = first_cell.offset(1, 0)
             first_cell = current_cell
+        wb.close()
         return card_list
+
+    @staticmethod
+    def saveToExcel(card_list: list, file_path: str = None, file_name: str = None) -> bool:
+        if file_name is None:
+            file_name = C.DEFAULT_EXCEL_FILE_NAME
+        if file_path is None:
+            file_path = C.DEFAULT_EXCEL_FILE_PATH
+
+        wb: Workbook
+        if os.path.exists(file_path + file_name):
+            wb = load_workbook(file_path + file_name)
+        else:
+            wb = Workbook()
+            wb.create_sheet('Sheet1', 0)
+
+        sheet = wb.worksheets[0]
+        first_cell = sheet['A1']
+        current_cell = first_cell
+        headers: list = []
+
+        for header in ExcelUtil.ORIGINAL_HEADER_NAMES:
+            header = str(header)
+            current_cell.value = header
+            headers.append(header.lower().strip().replace(" ", "_", -1))
+            current_cell = current_cell.offset(0, 1)
+
+        first_cell = sheet['A2']
+        current_cell = first_cell
+        card_list = ExcelUtil.reMap(card_list)
+        for card in card_list:
+            card_dict = card.__dict__
+            for header in headers:
+                current_cell.value = card_dict[header]
+                current_cell = current_cell.offset(0, 1)
+            first_cell = first_cell.offset(1, 0)
+            current_cell = first_cell
+
+        wb.save(file_path + file_name)
+        wb.close()
+        return True
 
     @staticmethod
     def sanitize(entry: dict) -> bool:
@@ -271,3 +312,20 @@ class ExcelUtil:
             entry[C.EXCEL_HEADER_CONDITION]: str = None
 
         return True
+
+    @staticmethod
+    def reMap(card_list: list):
+        rarity = {v: k for k, v in C.RARITY.items()}
+        edition = {v: k for k, v in C.PRINTING.items()}
+        condition = {v: k for k, v in C.CONDITION.items()}
+
+        for card in card_list:
+            card.recalc = None
+            if card.rarity is not None:
+                card.rarity = rarity[card.rarity]
+            if card.edition is not None:
+                card.edition = edition[card.edition]
+            if card.condition is not None:
+                card.condition = condition[card.condition]
+
+        return card_list

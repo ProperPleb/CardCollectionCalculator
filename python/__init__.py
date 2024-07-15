@@ -33,7 +33,8 @@ def main() -> int:
         logger.info(json_str)
         # logger.info(r.getDetailView(json_str, str(558188)).content)
 
-        util.ExcelUtil.excelMapper()
+        card_list = util.ExcelUtil.excelMapper()
+        util.ExcelUtil.saveToExcel(card_list, "../resources/", "test.xlsx")
     except Exception as e:
         logger.exception(e)
         return 1
